@@ -22,6 +22,7 @@
 平时我们描述http请求格式一般会说**一个请求行，多个消息头，一个空行，消息体**，而
 响应格式就是**一个响应行，多个消息头，一个空行，消息体**，为了统一，我们可以把请
 求行和响应行叫做开始行（Start Line）。
+![image03](img/image03.png)
 
 #### 1.1.1 ABNF范式
 > 上面的描述还不够严谨，比如空格代表什么，多个消息头怎么分隔，消息体可有可无怎么表
@@ -81,7 +82,10 @@ HTTP-message = start-line \*( header-field CRLF ) CRLF \[ message-body \]
   - field-value = *( field-content / obs-fold )
 - message-body = *OCTET
 
-#### 1.1.3 抓包
+#### 1.1.3 抓包验证
 使用wireshark进行抓包，抓取某个HTTP响应如下图，符合上面ABNF描述的HTTP协议格式。
 ![image-02](img/image-02.png)
+
+📗:介绍ABNF和抓包只为更深刻的理解HTTP消息的格式，了解即可。
+
 
