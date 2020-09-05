@@ -56,7 +56,7 @@
   - 如 method **SP** request-target **SP** HTTP-version CRLF
 
 - 选择 /：表示多个规则都是可供选择的规则
-  - 如 start-line = request-line / status-line
+  - 如 start-line = request-line **/** status-line
 
 - 值范围 %c##-##
   - 如OCTAL = “0” / “1” / “2” / “3” / “4” / “5” / “6” / “7” 与 OCTAL = %x30-37 等价
@@ -64,11 +64,11 @@
 - 序列组合 ()：将规则组合起来，视为单个元素
 
 - 量词 m*n：
-  - 如\* 元素表示零个或更多元素： *( header-field CRLF )
-  - 如1* 元素表示一个或更多元素，2*4 元素表示两个至四个元素
-[http]()
+  - 如 \*元素 表示零个或更多元素： **\***( header-field CRLF )表示0到多个header加CRLF
+  - 如 1\*元素 表示一个或更多元素，2 **\*** 4元素 表示2至4个元素
+
 - 可选序列 \[\]
-  - 如\[ message-body \]
+  - 如\[ message-body \]表示消息体是可选的，可有可无。
 
 #### 1.1.2 使用ABNF描述HTTP协议格式
 HTTP-message = start-line \*( header-field CRLF ) CRLF \[ message-body \]
