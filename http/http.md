@@ -23,10 +23,10 @@
 响应格式就是**一个响应行，多个消息头，一个空行，消息体**，为了统一，我们可以把请
 求行和响应行叫做开始行（Start Line）。
 
-#### ABNF
-> 上面的描述还不够严谨，比如消息头怎么表示，多个消息头怎么分隔，请求行中有哪些元
-> 素...因此引入了一种规则定义和描述语法规则，那就是ABNF（扩充巴科斯-瑙尔范式），
-> 它是对BNF（巴科斯-瑙尔范式）的扩展，下面看ABNF的介绍。
+#### 1.1.1 ABNF范式
+> 上面的描述还不够严谨，比如空格代表什么，多个消息头怎么分隔，消息体可有可无怎么表
+> 示...因此引入了一种规则定义和描述语法规则，那就是ABNF（扩充巴科斯-瑙尔范式），
+> 它是对BNF（巴科斯-瑙尔范式）的扩展，可以对字符的语义进行精确描述，下面看ABNF的介绍。
 
 规则如下
 
@@ -65,11 +65,11 @@
 - 量词 m*n：
   - 如\* 元素表示零个或更多元素： *( header-field CRLF )
   - 如1* 元素表示一个或更多元素，2*4 元素表示两个至四个元素
-
+[http]()
 - 可选序列 \[\]
   - 如\[ message-body \]
 
-#### 使用ABNF描述HTTP协议格式
+#### 1.1.2 使用ABNF描述HTTP协议格式
 HTTP-message = start-line \*( header-field CRLF ) CRLF \[ message-body \]
 
 - start-line = request-line / status-line
@@ -80,3 +80,8 @@ HTTP-message = start-line \*( header-field CRLF ) CRLF \[ message-body \]
   - field-name = token
   - field-value = *( field-content / obs-fold )
 - message-body = *OCTET
+
+#### 1.1.3 抓包
+使用wireshark进行抓包，抓取某个HTTP响应如下图，符合上面ABNF描述的HTTP协议格式。
+![image-02](img/image-02.png)
+
