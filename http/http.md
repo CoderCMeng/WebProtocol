@@ -9,7 +9,7 @@
 - **请求-响应**：客户端和服务器是一问一答的工作模式。
 - 可扩展的语义：指浏览器不受服务器使用的Http协议版本所限制，比如浏览器支持
   Http1.1协议，那么不管服务器用Http1.0还是Http1.1，浏览器都可以正常与服务器进行
-  通信。
+  通信，说通俗一点我觉得应该叫做兼容性。
 - 自描述消息格式：指传递的消息是自描述的，可以直接知道消息是视频还是图片还是音频
   还是什么。
 - **超文本**：指传输的内容不仅仅是文本，还可以是图片、音频、视频等内容。
@@ -20,5 +20,63 @@
 
 ### 1.1 Http协议格式
 平时我们描述http请求格式一般会说**一个请求行，多个消息头，一个空行，消息体**，而
-响应格式就是**一个响应行，多个消息头，一个空行，消息体**，这样只是一个大致的描
-述。
+响应格式就是**一个响应行，多个消息头，一个空行，消息体**，为了统一，我们可以把请
+求行和响应行叫做开始行（Start Line）。
+
+#### ABNF
+> 上面的描述还不够严谨，比如消息头怎么表示，多个消息头怎么分隔，请求行中有哪些元
+> 素...因此引入了一种规则定义和描述语法规则，那就是ABNF（扩充巴科斯-瑙尔范式），
+> 它是对BNF（巴科斯-瑙尔范式）的扩展，下面看ABNF的介绍。
+
+规则如下
+
+| 规则   | 定义                                      | 说明                                    |
+| ------ | ----------------------------------------- | --------------------------------------- |
+| ALPHA  | %x41-5A / %x61-7A                         | 大写和小写ASCII字母（A-Z, a-z）         |
+| DIGIT  | %x30-39                                   | 数字（0-9）                             |
+| HEXDIG | DIGIT / "A" / "B" / "C" / "D" / "E" / "F" | 十六进制数字（0-9, A-F, a-f）           |
+| DQUOTE | %x22                                      | 双引号                                  |
+| SP     | %x20                                      | 空格                                    |
+| HTAB   | %x09                                      | 横向制表符                              |
+| WSP    | SP / HTAB                                 | 空格或横向制表符                        |
+| LWSP   | *(WSP / CRLF WSP)                         | 直线空白（晚于换行）                    |
+| VCHAR  | %x21-7E                                   | 可见（打印）字符                        |
+| CHAR   | %x01-7F                                   | 任何7-位US-ASCII字符，不包括NUL（%x00） |
+| OCTET  | %x00-FF                                   | 8位数据                                 |
+| CTL    | %x00-1F / %x7F                            | 控制字符                                |
+| CR     | %x0D                                      | 回车                                    |
+| LF     | %x0A                                      | 换行                                    |
+| CRLF   | CR LF                                     | 互联网标准换行                          |
+| BIT    | "0" / "1"                                 | 二进制数字                              |
+
+操作符如下
+
+- 空白字符：用来分隔定义中的各个元素
+  - 如 method **SP** request-target **SP** HTTP-version CRLF
+
+- 选择 /：表示多个规则都是可供选择的规则
+  - 如 start-line = request-line / status-line
+
+- 值范围 %c##-##
+  - 如OCTAL = “0” / “1” / “2” / “3” / “4” / “5” / “6” / “7” 与 OCTAL = %x30-37 等价
+
+- 序列组合 ()：将规则组合起来，视为单个元素
+
+- 量词 m*n：
+  - 如\* 元素表示零个或更多元素： *( header-field CRLF )
+  - 如1* 元素表示一个或更多元素，2*4 元素表示两个至四个元素
+
+- 可选序列 \[\]
+  - 如\[ message-body \]
+
+#### 使用ABNF描述HTTP协议格式
+HTTP-message = start-line \*( header-field CRLF ) CRLF \[ message-body \]
+
+- start-line = request-line / status-line
+  - request-line = method SP request-target SP HTTP-version CRLF
+  - status-line = HTTP-version SP status-code SP reason-phrase CRLF
+- header-field = field-name ":" OWS field-value OWS
+  - OWS = *( SP / HTAB )
+  - field-name = token
+  - field-value = *( field-content / obs-fold )
+- message-body = *OCTET
