@@ -86,7 +86,7 @@ HTTP-message = start-line \*( header-field CRLF ) CRLF \[ message-body \]
 使用wireshark进行抓包，抓取某个HTTP响应如下图，符合上面ABNF描述的HTTP协议格式。
 ![image-02](img/image02.png)
 
-📗:介绍ABNF和抓包只为更深刻的理解HTTP消息的格式，了解即可。
+>tips:介绍ABNF和抓包只为更深刻的理解HTTP消息的格式，了解即可。
 
 
 ## 二、网络分层模型
